@@ -44,6 +44,16 @@ router.post("/", async function (req, res, next) {
   }
 });
 
+/** GET /[handle]  => {company: companyData} */
+
+router.get("/:handle", async function (req, res, next) {
+  try {
+    const company = await Company.get(req.params.handle);
+    return res.json({ company });
+  } catch (err) {
+    return next(err);
+  }
+});
 
 
 module.exports = router;

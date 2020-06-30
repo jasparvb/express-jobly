@@ -79,6 +79,24 @@ class Company {
     
         return result.rows[0];
     }
+
+    static async get(handle) {
+        const result = await db.query(
+            `SELECT handle,
+                name,
+                num_employees,
+                description,
+                logo_url
+            FROM companies 
+            WHERE handle = $1`, [handle]);
+    
+        if (result.rows.length === 0) {
+            throw { message: `There is no company with the handle '${handle}`, status: 404 }
+        }
+    
+        return result.rows[0];
+    }
+    
 }
 
 module.exports = Company;
