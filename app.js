@@ -13,6 +13,16 @@ app.use(express.json());
 // add logging system
 app.use(morgan("tiny"));
 
+/** routes */
+
+//const authRoutes = require("./routes/auth");
+//const userRoutes = require("./routes/users");
+const companyRoutes = require("./routes/companies");
+
+//app.use("/auth", authRoutes);
+//app.use("/users", userRoutes);
+app.use("/companies", companyRoutes);
+
 /** 404 handler */
 
 app.use(function(req, res, next) {
