@@ -3,7 +3,7 @@ const db = require("../db");
 const ExpressError = require("../expressError");
 
 class Company {
-    static async get(q) {
+    static async getAll(q) {
         let query = "SELECT handle, name, FROM companies";
         let where = [];
         let values = [];
