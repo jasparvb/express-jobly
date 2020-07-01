@@ -90,12 +90,23 @@ class Company {
                 logo_url
             FROM companies 
             WHERE handle = $1`, [handle]);
+
+        let company = result.rows[0];
     
-        if (!result.rows[0]) {
+        if (!company) {
             throw new ExpressError(`There's no company with the handle '${handle}`, 404);
         }
-    
-        return result.rows[0];
+
+        const jobsResult = await db.query(
+            `SELECT id,
+                title,
+                salary,
+                equity
+            FROM jobs 
+            WHERE company_handle = $1`, [handle]);
+        
+        company.jobs = jobsResult.rows;
+        return company;
     }
 
     static async update(data, handle) {
