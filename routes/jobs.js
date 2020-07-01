@@ -58,7 +58,7 @@ router.get("/:id", async function (req, res, next) {
 
 /** PATCH / - update job.
  *
- * {id, title, salary, equity, company_handle, date_posted} =>
+ * {title, salary, equity, company_handle} =>
  *   {job: {id, title, salary, equity, company_handle, date_posted}}
  *
  **/
