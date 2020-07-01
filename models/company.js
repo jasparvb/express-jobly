@@ -1,6 +1,7 @@
 /** Company class */
 const db = require("../db");
-const ExpressError = require("../expressError");
+const ExpressError = require("../helpers/expressError");
+const sqlForPartialUpdate = require("../helpers/partialUpdate");
 
 class Company {
     static async getAll(q) {
@@ -90,10 +91,21 @@ class Company {
             FROM companies 
             WHERE handle = $1`, [handle]);
     
-        if (result.rows.length === 0) {
-            throw { message: `There is no company with the handle '${handle}`, status: 404 }
+        if (!result.rows[0]) {
+            throw new ExpressError(`There's no company with the handle '${handle}`, 404);
         }
     
+        return result.rows[0];
+    }
+
+    static async update(data, handle) {
+        let { query, values } = sqlForPartialUpdate("companies", data, "handle", handle);
+        const result = await db.query(query, values);
+        
+        if (!result.rows[0]) {
+            throw new ExpressError(`There's no company with the handle '${handle}`, 404);
+        }
+        
         return result.rows[0];
     }
     
