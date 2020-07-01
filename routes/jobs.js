@@ -10,7 +10,7 @@ const router = new express.Router();
 
 /** GET / - get list of jobs.
  *
- * => {jobs: [{handle, name}, ...]}
+ * => {jobs: [{id, title, company_handle}, ...]}
  *
  **/
 router.get("/", async function (req, res, next) {
@@ -45,11 +45,11 @@ router.post("/", async function (req, res, next) {
     }
 });
 
-/** GET /[handle]  => {job: jobData} */
+/** GET /[id]  => {job: jobData} */
 
-router.get("/:handle", async function (req, res, next) {
+router.get("/:id", async function (req, res, next) {
     try {
-        const job = await Job.get(req.params.handle);
+        const job = await Job.get(req.params.id);
         return res.json({ job });
     } catch (err) {
         return next(err);
@@ -63,7 +63,7 @@ router.get("/:handle", async function (req, res, next) {
  *
  **/
 
-router.patch("/:handle", async function (req, res, next) {
+router.patch("/:id", async function (req, res, next) {
     try {
         const result = jsonschema.validate(req.body, jobUpdateSchema);
         if (!result.valid) {
@@ -71,18 +71,18 @@ router.patch("/:handle", async function (req, res, next) {
             let err = new ExpressError(listOfErrors, 400);
             return next(err);
         }
-        const job = await Job.update(req.body, req.params.handle);
+        const job = await Job.update(req.body, req.params.id);
         return res.status(201).json({ job });
     } catch (err) {
         return next(err);
     }
 });
 
-/** DELETE /[handle]   => {message: "job deleted"} */
+/** DELETE /[id]   => {message: "Job deleted"} */
 
-router.delete("/:handle", async function (req, res, next) {
+router.delete("/:id", async function (req, res, next) {
     try {
-        await Job.remove(req.params.handle);
+        await Job.remove(req.params.id);
         return res.json({ message: "Job deleted" });
     } catch (err) {
         return next(err);
