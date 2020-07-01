@@ -2,6 +2,7 @@ const express = require("express");
 const Company = require("../models/company");
 const jsonschema = require("jsonschema");
 const companySchema = require("../schemas/company.json");
+const companyUpdateSchema = require("../schemas/companyUpdate.json");
 
 //const {ensureLoggedIn, ensureCorrectUser} = require("../middleware/auth");
 
@@ -55,5 +56,26 @@ router.get("/:handle", async function (req, res, next) {
   }
 });
 
+/** PATCH / - update company.
+ *
+ * {handle, name, num_employees, description, logo_url} =>
+ *   {company: {handle, name, num_employees, description, logo_url}}
+ *
+ **/
+
+router.patch("/:handle", async function (req, res, next) {
+  try {
+    const result = jsonschema.validate(req.body, companyUpdateSchema);
+    if (!result.valid) {
+      let listOfErrors = result.errors.map(error => error.stack);
+      let err = new ExpressError(listOfErrors, 400);
+      return next(err);
+    }
+    const company = await Company.update(req.body, req.params.handle);
+    return res.status(201).json({ company });
+  } catch (err) {
+    return next(err);
+  }
+});
 
 module.exports = router;
