@@ -25,7 +25,7 @@ router.get("/", async function (req, res, next) {
 
 /** POST / - post job.
  *
- * {id, title, salary, equity, company_handle, date_posted} =>
+ * {title, salary, equity, company_handle} =>
  *   {job: {id, title, salary, equity, company_handle, date_posted}}
  *
  **/

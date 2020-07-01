@@ -38,10 +38,10 @@ class Company {
         const result = await db.query(finalQuery, values);
             
         if (!result.rows[0]) {
-            throw new ExpressError(`No companies: ${username}`, 404);
+            throw new ExpressError(`No companies found`, 404);
         }
         
-        return result.rows[0];
+        return result.rows;
     }
 
     static async create(data) {

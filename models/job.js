@@ -5,7 +5,7 @@ const sqlForPartialUpdate = require("../helpers/partialUpdate");
 
 class Job {
     static async getAll(q) {
-        let query = "SELECT title, company_handle FROM jobs";
+        let query = "SELECT id, title, company_handle FROM jobs";
         let where = [];
         let values = [];
      
@@ -31,9 +31,34 @@ class Job {
         const result = await db.query(finalQuery, values);
             
         if (!result.rows[0]) {
-            throw new ExpressError(`No companies: ${username}`, 404);
+            throw new ExpressError(`No jobs found`, 404);
         }
         
+        return result.rows;
+    }
+
+    static async create(data) {
+        const result = await db.query(
+            `INSERT INTO jobs (
+                title,
+                salary,
+                equity,
+                company_handle) 
+            VALUES ($1, $2, $3, $4) 
+            RETURNING id,
+                title,
+                salary,
+                equity,
+                company_handle,
+                date_posted`,
+            [
+                data.title,
+                data.salary,
+                data.equity,
+                data.company_handle
+            ]
+        );
+    
         return result.rows[0];
     }
 
