@@ -93,6 +93,29 @@ class Job {
         return job;
     }
 
+    static async update(data, id) {
+        let { query, values } = sqlForPartialUpdate("jobs", data, "id", id);
+        const result = await db.query(query, values);
+        
+        if (!result.rows[0]) {
+            throw new ExpressError(`There's no job with the id '${id}`, 404);
+        }
+
+        return result.rows[0];
+    }
+
+    static async remove(id) {
+        const result = await db.query(
+          `DELETE FROM jobs 
+             WHERE id = $1 
+             RETURNING id`,
+            [id]);
+    
+        if (!result.rows[0]) {
+            throw new ExpressError(`There's no job with the id '${id}`, 404);
+        }
+    }
+
     
 }
 
