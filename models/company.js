@@ -5,7 +5,7 @@ const sqlForPartialUpdate = require("../helpers/partialUpdate");
 
 class Company {
     static async getAll(q) {
-        let query = "SELECT handle, name, FROM companies";
+        let query = "SELECT handle, name FROM companies";
         let where = [];
         let values = [];
 
