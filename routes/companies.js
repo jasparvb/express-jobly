@@ -13,13 +13,13 @@ const router = new express.Router();
  * => {companies: [{handle, name}, ...]}
  *
  **/
-router.get("/", async function(req, res, next) {
+router.get("/", async function (req, res, next) {
     try {
-      const companies = await Company.getAll(req.query);
-  
-      return res.json({ companies });
+        const companies = await Company.getAll(req.query);
+
+        return res.json({ companies });
     } catch (err) {
-      return next(err);
+        return next(err);
     }
 });
 
@@ -31,29 +31,29 @@ router.get("/", async function(req, res, next) {
  **/
 
 router.post("/", async function (req, res, next) {
-  try {
-    const result = jsonschema.validate(req.body, companySchema);
-    if (!result.valid) {
-      let listOfErrors = result.errors.map(error => error.stack);
-      let err = new ExpressError(listOfErrors, 400);
-      return next(err);
+    try {
+        const result = jsonschema.validate(req.body, companySchema);
+        if (!result.valid) {
+            let listOfErrors = result.errors.map(error => error.stack);
+            let err = new ExpressError(listOfErrors, 400);
+            return next(err);
+        }
+        const company = await Company.create(req.body);
+        return res.status(201).json({ company });
+    } catch (err) {
+        return next(err);
     }
-    const company = await Company.create(req.body);
-    return res.status(201).json({ company });
-  } catch (err) {
-    return next(err);
-  }
 });
 
 /** GET /[handle]  => {company: companyData} */
 
 router.get("/:handle", async function (req, res, next) {
-  try {
-    const company = await Company.get(req.params.handle);
-    return res.json({ company });
-  } catch (err) {
-    return next(err);
-  }
+    try {
+        const company = await Company.get(req.params.handle);
+        return res.json({ company });
+    } catch (err) {
+        return next(err);
+    }
 });
 
 /** PATCH / - update company.
@@ -64,29 +64,29 @@ router.get("/:handle", async function (req, res, next) {
  **/
 
 router.patch("/:handle", async function (req, res, next) {
-  try {
-    const result = jsonschema.validate(req.body, companyUpdateSchema);
-    if (!result.valid) {
-      let listOfErrors = result.errors.map(error => error.stack);
-      let err = new ExpressError(listOfErrors, 400);
-      return next(err);
+    try {
+        const result = jsonschema.validate(req.body, companyUpdateSchema);
+        if (!result.valid) {
+            let listOfErrors = result.errors.map(error => error.stack);
+            let err = new ExpressError(listOfErrors, 400);
+            return next(err);
+        }
+        const company = await Company.update(req.body, req.params.handle);
+        return res.status(201).json({ company });
+    } catch (err) {
+        return next(err);
     }
-    const company = await Company.update(req.body, req.params.handle);
-    return res.status(201).json({ company });
-  } catch (err) {
-    return next(err);
-  }
 });
 
 /** DELETE /[handle]   => {message: "Company deleted"} */
 
 router.delete("/:handle", async function (req, res, next) {
-  try {
-    await Company.remove(req.params.handle);
-    return res.json({ message: "Company deleted" });
-  } catch (err) {
-    return next(err);
-  }
+    try {
+        await Company.remove(req.params.handle);
+        return res.json({ message: "Company deleted" });
+    } catch (err) {
+        return next(err);
+    }
 });
 
 

@@ -105,8 +105,20 @@ class Company {
         if (!result.rows[0]) {
             throw new ExpressError(`There's no company with the handle '${handle}`, 404);
         }
-        
+
         return result.rows[0];
+    }
+
+    static async remove(handle) {
+        const result = await db.query(
+          `DELETE FROM companies 
+             WHERE handle = $1 
+             RETURNING handle`,
+            [handle]);
+    
+        if (!result.rows[0]) {
+            throw new ExpressError(`There's no company with the handle '${handle}`, 404);
+        }
     }
     
 }
