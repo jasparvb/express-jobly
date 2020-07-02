@@ -1,6 +1,7 @@
 /** User class for jobly */
 const db = require("../db");
 const ExpressError = require("../helpers/expressError");
+const partialUpdate = require("../helpers/partialUpdate");
 const bcrypt = require("bcrypt");
 const { BCRYPT_WORK_FACTOR } = require("../config");
 
@@ -13,30 +14,56 @@ class User {
    *    {username, password, first_name, last_name, phone}
    */
 
-  static async register({username, password, first_name, last_name, email, photo_url, is_admin}) {
-    //Check to see if username already exists
-    const checkUsername = await db.query(
-        `SELECT username FROM users WHERE username = $1`, [username]
+    static async register({username, password, first_name, last_name, email, photo_url}) {
+        //Check to see if username already exists
+        const checkUsername = await db.query(
+            `SELECT username FROM users WHERE username = $1`, [username]
         );
-    if (checkUsername.rows[0]) {
-        throw new ExpressError(`The username '${username}' already exists`, 404);
+        if (checkUsername.rows[0]) {
+            throw new ExpressError(`The username '${username}' already exists`, 400);
+        }
+        const hashedPassword = await bcrypt.hash(
+            password, BCRYPT_WORK_FACTOR);
+        const result = await db.query(
+        `INSERT INTO users (username, 
+            password, 
+            first_name, 
+            last_name, 
+            email, 
+            photo_url)
+        VALUES ($1, $2, $3, $4, $5, $6)
+        RETURNING username, password, first_name, last_name, email, photo_url`,
+        [username, hashedPassword, first_name, last_name, email, photo_url]
+        );
+        return result.rows[0];
     }
-    const hashedPassword = await bcrypt.hash(
-      password, BCRYPT_WORK_FACTOR);
-    const result = await db.query(
-      `INSERT INTO users (username, 
-        password, 
-        first_name, 
-        last_name, 
-        email, 
-        photo_url, 
-        is_admin)
-      VALUES ($1, $2, $3, $4, $5, $6, $7)
-      RETURNING username, password, first_name, last_name, email`,
-      [username, hashedPassword, first_name, last_name, email, photo_url, is_admin]
-    );
-    return result.rows[0];
-  }
-}
 
+    /** Get all users. */
+
+    static async getAll() {
+        const result = await db.query(
+            `SELECT username, first_name, last_name, email
+            FROM users
+            ORDER BY username`
+        );
+
+        return result.rows;
+    }
+
+    /** Retrieve a user given a username. */
+
+    static async getUser(username) {
+        const result = await db.query(
+            `SELECT username, first_name, last_name, photo_url 
+            FROM users 
+            WHERE username = $1`,
+        [username]
+        );
+
+        if (!result.rows[0]) {
+            throw new ExpressError(`There is no user with the username '${username}'`, 404);
+        }
+        return result.rows[0];
+    }
+}
 module.exports = User;
