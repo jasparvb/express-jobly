@@ -11,7 +11,7 @@ const { BCRYPT_WORK_FACTOR } = require("../config");
 class User {
 
     /** register new user -- returns
-    *    {username, password, first_name, last_name, email, photo_url}
+    *    {username, password, is_admin}
     */
 
     static async register({username, password, first_name, last_name, email, photo_url}) {
@@ -32,7 +32,7 @@ class User {
             email, 
             photo_url)
         VALUES ($1, $2, $3, $4, $5, $6)
-        RETURNING username, password, first_name, last_name, email, photo_url`,
+        RETURNING username, password, is_admin`,
         [username, hashedPassword, first_name, last_name, email, photo_url]
         );
         return result.rows[0];
