@@ -3,7 +3,7 @@ CREATE TABLE companies(
     name TEXT UNIQUE NOT NULL,
     num_employees INTEGER,
     description TEXT,
-    logo_url TEXT,
+    logo_url TEXT
 );
 
 CREATE TABLE jobs(

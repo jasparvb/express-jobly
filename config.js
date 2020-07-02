@@ -17,9 +17,9 @@ const BCRYPT_WORK_FACTOR = 12;
 let DB_URI;
 
 if (process.env.NODE_ENV === "test") {
-  DB_URI = "jobly-test";
+  DB_URI = "postgresql://postgres:41361@localhost/jobly-test";
 } else {
-  DB_URI = process.env.DATABASE_URL || "jobly";
+  DB_URI = process.env.DATABASE_URL || "postgresql://postgres:41361@localhost/jobly";
 }
 
 module.exports = {
