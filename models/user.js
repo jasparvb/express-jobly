@@ -65,5 +65,42 @@ class User {
         }
         return result.rows[0];
     }
+
+    /** Update a user using partial update */
+
+    static async update(username, data) {
+        if (data.password) {
+            data.password = await bcrypt.hash(data.password, BCRYPT_WORK_FACTOR);
+        }
+    
+        let { query, values } = partialUpdate("users", data, "username", username);
+    
+        const result = await db.query(query, values);
+        const user = result.rows[0];
+    
+        if (!user) {
+            throw new ExpressError(`There is no user with the username '${username}'`, 404);
+        }
+    
+        delete user.password;
+        delete user.is_admin;
+    
+        return user;
+    }
+    
+      /** Delete user given username */
+    
+    static async remove(username) {
+        let result = await db.query(
+            `DELETE FROM users 
+            WHERE username = $1
+            RETURNING username`,
+            [username]
+        );
+    
+        if (result.rows.length === 0) {
+            throw new ExpressError(`There is no user with the username '${username}'`, 404);
+        }
+    }
 }
 module.exports = User;
