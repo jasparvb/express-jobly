@@ -38,6 +38,30 @@ class User {
         return result.rows[0];
     }
 
+    /** Login user */
+
+    static async authenticate(data) {
+        const result = await db.query(
+            `SELECT username, 
+                password, 
+                is_admin
+            FROM users 
+            WHERE username = $1`,
+            [data.username]
+        );
+
+        const user = result.rows[0];
+
+        if (user) {
+            const valid = await bcrypt.compare(data.password, user.password);
+            if (valid) {
+                return user;
+            }
+        }
+
+        throw ExpressError("Invalid Username/Password", 401);
+    }
+
     /** Get all users. */
 
     static async getAll() {
