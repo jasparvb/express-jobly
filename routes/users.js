@@ -1,6 +1,9 @@
 const express = require("express");
 const User = require("../models/user");
 const jwt = require("jsonwebtoken");
+const jsonschema = require("jsonschema");
+const userSchema = require("../schemas/user.json");
+const userUpdateSchema = require("../schemas/userUpdate.json");
 const {ensureLoggedIn, ensureCorrectUser} = require("../middleware/auth");
 
 const router = new express.Router();
@@ -11,6 +14,12 @@ const router = new express.Router();
  */
 router.post("/", async function(req, res, next) {
     try {
+        const result = jsonschema.validate(req.body, userSchema);
+        if (!result.valid) {
+            let listOfErrors = result.errors.map(error => error.stack);
+            let err = new ExpressError(listOfErrors, 400);
+            return next(err);
+        }
         const user = await User.register(req.body);
         let token = jwt.sign({username: user.username, is_admin: user.is_admin}, SECRET_KEY);
         return res.status(201).json({ token });
@@ -44,6 +53,28 @@ router.get("/:username/", ensureCorrectUser, async function(req, res, next) {
         const user = await User.get(req.params.username);
   
         return res.json({ user });
+    } catch (err) {
+        return next(err);
+    }
+});
+
+/** PATCH / - update user.
+ *
+ * {username, first_name, last_name, email, photo_url} =>
+ *   {user: {username, first_name, last_name, email, photo_url}}
+ *
+ **/
+
+router.patch("/:username", async function (req, res, next) {
+    try {
+        const result = jsonschema.validate(req.body, userUpdateSchema);
+        if (!result.valid) {
+            let listOfErrors = result.errors.map(error => error.stack);
+            let err = new ExpressError(listOfErrors, 400);
+            return next(err);
+        }
+        const user = await User.update(req.body, req.params.username);
+        return res.status(201).json({ user });
     } catch (err) {
         return next(err);
     }
