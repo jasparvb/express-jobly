@@ -4,7 +4,7 @@ const jsonschema = require("jsonschema");
 const jobSchema = require("../schemas/job.json");
 const jobUpdateSchema = require("../schemas/jobUpdate.json");
 
-//const {ensureLoggedIn, ensureCorrectUser} = require("../middleware/auth");
+const {ensureLoggedIn, ensureAdmin} = require("../middleware/auth");
 
 const router = new express.Router();
 
@@ -13,7 +13,7 @@ const router = new express.Router();
  * => {jobs: [{id, title, company_handle}, ...]}
  *
  **/
-router.get("/", async function (req, res, next) {
+router.get("/", ensureLoggedIn, async function (req, res, next) {
     try {
         const jobs = await Job.getAll(req.query);
 
@@ -30,7 +30,7 @@ router.get("/", async function (req, res, next) {
  *
  **/
 
-router.post("/", async function (req, res, next) {
+router.post("/", ensureAdmin, async function (req, res, next) {
     try {
         const result = jsonschema.validate(req.body, jobSchema);
         if (!result.valid) {
@@ -47,7 +47,7 @@ router.post("/", async function (req, res, next) {
 
 /** GET /[id]  => {job: jobData} */
 
-router.get("/:id", async function (req, res, next) {
+router.get("/:id", ensureLoggedIn, async function (req, res, next) {
     try {
         const job = await Job.get(req.params.id);
         return res.json({ job });
@@ -63,7 +63,7 @@ router.get("/:id", async function (req, res, next) {
  *
  **/
 
-router.patch("/:id", async function (req, res, next) {
+router.patch("/:id", ensureAdmin, async function (req, res, next) {
     try {
         const result = jsonschema.validate(req.body, jobUpdateSchema);
         if (!result.valid) {
@@ -80,7 +80,7 @@ router.patch("/:id", async function (req, res, next) {
 
 /** DELETE /[id]   => {message: "Job deleted"} */
 
-router.delete("/:id", async function (req, res, next) {
+router.delete("/:id", ensureAdmin, async function (req, res, next) {
     try {
         await Job.remove(req.params.id);
         return res.json({ message: "Job deleted" });
