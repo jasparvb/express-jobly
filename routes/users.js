@@ -48,7 +48,7 @@ router.get("/", ensureLoggedIn, async function(req, res, next) {
  * => {user: {username, first_name, last_name, email, photo_url}}
  *
  **/
-router.get("/:username/", ensureCorrectUser, async function(req, res, next) {
+router.get("/:username/", ensureLoggedIn, async function(req, res, next) {
     try {
         const user = await User.get(req.params.username);
   
@@ -65,7 +65,7 @@ router.get("/:username/", ensureCorrectUser, async function(req, res, next) {
  *
  **/
 
-router.patch("/:username", async function (req, res, next) {
+router.patch("/:username", ensureCorrectUser, async function (req, res, next) {
     try {
         const result = jsonschema.validate(req.body, userUpdateSchema);
         if (!result.valid) {
@@ -82,7 +82,7 @@ router.patch("/:username", async function (req, res, next) {
 
 /** DELETE /[username]   => {message: "User deleted"} */
 
-router.delete("/:username", async function (req, res, next) {
+router.delete("/:username", ensureCorrectUser, async function (req, res, next) {
     try {
         await User.remove(req.params.username);
         return res.json({ message: "User deleted" });
