@@ -12,7 +12,8 @@
             "first_name": "Lionel",
             "last_name": "Messi",
             "email": "messi@fcb.es",
-            "photo_url": "https://www.fcb.es/cdn/messi.jpg"
+            "photo_url": "https://www.fcb.es/cdn/messi.jpg",
+            "is_admin": true
         }
     ],
     "required": [

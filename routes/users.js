@@ -79,3 +79,16 @@ router.patch("/:username", async function (req, res, next) {
         return next(err);
     }
 });
+
+/** DELETE /[username]   => {message: "User deleted"} */
+
+router.delete("/:username", async function (req, res, next) {
+    try {
+        await User.remove(req.params.username);
+        return res.json({ message: "User deleted" });
+    } catch (err) {
+        return next(err);
+    }
+});
+
+module.exports = router;
