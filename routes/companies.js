@@ -4,7 +4,7 @@ const jsonschema = require("jsonschema");
 const companySchema = require("../schemas/company.json");
 const companyUpdateSchema = require("../schemas/companyUpdate.json");
 
-//const {ensureLoggedIn, ensureCorrectUser} = require("../middleware/auth");
+const {ensureLoggedIn, ensureAdmin} = require("../middleware/auth");
 
 const router = new express.Router();
 
@@ -13,7 +13,7 @@ const router = new express.Router();
  * => {companies: [{handle, name}, ...]}
  *
  **/
-router.get("/", async function (req, res, next) {
+router.get("/", ensureLoggedIn, async function (req, res, next) {
     try {
         const companies = await Company.getAll(req.query);
 
@@ -30,7 +30,7 @@ router.get("/", async function (req, res, next) {
  *
  **/
 
-router.post("/", async function (req, res, next) {
+router.post("/", ensureAdmin, async function (req, res, next) {
     try {
         const result = jsonschema.validate(req.body, companySchema);
         if (!result.valid) {
@@ -47,7 +47,7 @@ router.post("/", async function (req, res, next) {
 
 /** GET /[handle]  => {company: companyData} */
 
-router.get("/:handle", async function (req, res, next) {
+router.get("/:handle", ensureLoggedIn, async function (req, res, next) {
     try {
         const company = await Company.get(req.params.handle);
         return res.json({ company });
@@ -63,7 +63,7 @@ router.get("/:handle", async function (req, res, next) {
  *
  **/
 
-router.patch("/:handle", async function (req, res, next) {
+router.patch("/:handle", ensureAdmin, async function (req, res, next) {
     try {
         const result = jsonschema.validate(req.body, companyUpdateSchema);
         if (!result.valid) {
@@ -80,7 +80,7 @@ router.patch("/:handle", async function (req, res, next) {
 
 /** DELETE /[handle]   => {message: "Company deleted"} */
 
-router.delete("/:handle", async function (req, res, next) {
+router.delete("/:handle", ensureAdmin, async function (req, res, next) {
     try {
         await Company.remove(req.params.handle);
         return res.json({ message: "Company deleted" });
