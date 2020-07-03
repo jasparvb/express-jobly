@@ -1,4 +1,5 @@
 const express = require("express");
+const ExpressError = require("../helpers/expressError");
 const Job = require("../models/job");
 const jsonschema = require("jsonschema");
 const jobSchema = require("../schemas/job.json");
