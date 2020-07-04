@@ -26,7 +26,7 @@ class Job {
             query += " WHERE ";
         }
 
-        let finalQuery = query + where.join(" AND ") + " ORDER BY name";
+        let finalQuery = query + where.join(" AND ") + " ORDER BY title";
 
         const result = await db.query(finalQuery, values);
             
@@ -62,7 +62,7 @@ class Job {
         return result.rows[0];
     }
 
-    static async get(id) {
+    static async getJob(id) {
         const result = await db.query(
             `SELECT id,
                 title,

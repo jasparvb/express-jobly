@@ -50,7 +50,7 @@ router.post("/", ensureAdmin, async function (req, res, next) {
 
 router.get("/:id", ensureLoggedIn, async function (req, res, next) {
     try {
-        const job = await Job.get(req.params.id);
+        const job = await Job.getJob(req.params.id);
         return res.json({ job });
     } catch (err) {
         return next(err);
