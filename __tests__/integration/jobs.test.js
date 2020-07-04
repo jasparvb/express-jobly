@@ -72,11 +72,12 @@ describe("POST /jobs", async function () {
 
 describe("GET /jobs", async function () {
     test("Gets list of jobs", async function () {
-        const res = await request(app).get(`/jobs`);
-        const jobs = res.body.jobs;
-        expect(jobs).toHaveLength(1);
-        expect(jobs[0]).toHaveProperty("company_handle");
-        expect(jobs[0]).toHaveProperty("title");
+        const res = await request(app).get(`/jobs`).send({
+            _token: DATA.token
+        });
+        expect(res.body.jobs).toHaveLength(1);
+        expect(res.body.jobs[0]).toHaveProperty("company_handle");
+        expect(res.body.jobs[0]).toHaveProperty("title");
     });
   
     test("Test search", async function () {
@@ -100,12 +101,12 @@ describe("GET /jobs", async function () {
                 _token: DATA.token
             });
     
-        const response = await request(app)
+        const res = await request(app)
             .get("/jobs?search=junior")
             .send({_token: DATA.token});
-        expect(response.body.jobs).toHaveLength(1);
-        expect(response.body.jobs[0]).toHaveProperty("company_handle");
-        expect(response.body.jobs[0]).toHaveProperty("title");
+        expect(res.body.jobs).toHaveLength(1);
+        expect(res.body.jobs[0]).toHaveProperty("company_handle");
+        expect(res.body.jobs[0]).toHaveProperty("title");
     });
 });
   
