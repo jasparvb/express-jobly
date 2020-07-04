@@ -89,7 +89,35 @@ describe('POST /users', function() {
     });
 });
   
-
+describe('GET /users', function() {
+    test('Returns list of users', async function() {
+        const res = await request(app)
+            .get('/users')
+            .send({ _token: `${DATA.token}` });
+        expect(res.body.users).toHaveLength(1);
+        expect(res.body.users[0]).toHaveProperty('username');
+        expect(res.body.users[0]).not.toHaveProperty('password');
+    });
+});
+  
+describe('GET /users/:username', function() {
+    test('Returns a user by username', async function() {
+        const res = await request(app)
+            .get(`/users/${DATA.username}`)
+            .send({ _token: `${DATA.token}` });
+        expect(res.body.user).toHaveProperty('username');
+        expect(res.body.user).not.toHaveProperty('password');
+        expect(res.body.user.username).toBe('messi10');
+    });
+  
+    test('Responds with 404 if user cannot be found', async function() {
+      const res = await request(app)
+        .get(`/users/griezman`)
+        .send({ _token: `${DATA.token}` });
+      expect(res.statusCode).toBe(404);
+    });
+});
+  
 afterEach(async function() {
     try {
       await db.query('DELETE FROM jobs');
