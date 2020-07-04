@@ -137,10 +137,8 @@ describe('PATCH /companies/:handle', async function() {
   });
 
   test('Responds with 404 if company cannot be found', async function() {
-    // delete company first
-    await request(app).delete(`/companies/${DATA.company.handle}`);
     const res = await request(app)
-      .patch(`/companies/tradedesk`)
+      .patch(`/companies/sdagaergaasd`)
       .send({
         name: 'SamsClub',
         _token: DATA.token
@@ -160,9 +158,8 @@ describe('DELETE /companies/:handle', async function() {
   });
 
   test('Responds with 404 if company cannot be found', async function() {
-    // delete company first
     const res = await request(app)
-      .delete(`/companies/tradedesk`)
+      .delete(`/companies/sdagaergaasd`)
       .send({
         _token: DATA.token
       });
@@ -173,6 +170,7 @@ describe('DELETE /companies/:handle', async function() {
 
 afterEach(async function() {
   try {
+    await db.query('DELETE FROM jobs');
     await db.query('DELETE FROM users');
     await db.query('DELETE FROM companies');
   } catch (err) {
