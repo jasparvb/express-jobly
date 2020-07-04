@@ -11,7 +11,8 @@
             "name": "Walmart Inc.",
             "num_employees": 2000,
             "description": "A family friendly superstore",
-            "logo_url": "https://cdn.corporate.walmart.com/logo.jpg"
+            "logo_url": "https://cdn.corporate.walmart.com/logo.jpg",
+            "_token": "2l34kl2hl445346jklkjsdlsk"
         }
     ],
     "required": [
@@ -69,6 +70,15 @@
             "format": "uri",
             "examples": [
                 "https://cdn.corporate.walmart.com/logo.jpg"
+            ]
+        },
+        "_token": {
+            "$id": "#/properties/token",
+            "type": "string",
+            "title": "The Token Schema ",
+            "default": "",
+            "examples": [
+              "2l34kl2hl445346jklkjsdlsk"
             ]
         }
     }

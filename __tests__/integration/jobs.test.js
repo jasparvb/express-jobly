@@ -42,7 +42,7 @@ beforeEach(async function() {
   }
 });
 
-describe("POST /jobs", async function () {
+describe("POST /jobs", function () {
     test("Creates a new job", async function () {
       const res = await request(app)
           .post(`/jobs`)
@@ -70,7 +70,7 @@ describe("POST /jobs", async function () {
     });
 });
 
-describe("GET /jobs", async function () {
+describe("GET /jobs", function () {
     test("Gets list of jobs", async function () {
         const res = await request(app).get(`/jobs`).send({
             _token: DATA.token
@@ -110,7 +110,7 @@ describe("GET /jobs", async function () {
     });
 });
   
-describe("GET /jobs/:id", async function () {
+describe("GET /jobs/:id", function () {
     test("Returns a single job", async function () {
         const res = await request(app).get(`/jobs/${DATA.jobId}`).send({
             _token: DATA.token
@@ -130,7 +130,7 @@ describe("GET /jobs/:id", async function () {
 });
   
   
-describe("PATCH /jobs/:id", async function () {
+describe("PATCH /jobs/:id", function () {
     test("Updates a single job", async function () {
         const res = await request(app)
             .patch(`/jobs/${DATA.jobId}`)
@@ -152,8 +152,11 @@ describe("PATCH /jobs/:id", async function () {
     });
   
     test("Responds with 404 if job cannot be found", async function () {
+        // delete job, then try to patch
+        await request(app)
+            .delete(`/jobs/${DATA.jobId}`).send({_token: DATA.token});
         const res = await request(app)
-            .patch(`/jobs/999999999`)
+            .patch(`/jobs/${DATA.jobId}`)
             .send({
                 _token: DATA.token, title: "Freelance Web Developer", salary: 100000
             });
@@ -162,17 +165,20 @@ describe("PATCH /jobs/:id", async function () {
   });
   
   
-describe("DELETE /jobs/:id", async function () {
+describe("DELETE /jobs/:id", function () {
     test("Deletes a job", async function () {
         const res = await request(app)
-            .delete(`/jobs/${DATA.jobId}`).send({_token: DATA.token})
+            .delete(`/jobs/${DATA.jobId}`).send({_token: DATA.token});
         expect(res.body).toEqual({message: "Job deleted"});
     });
   
   
     test("Responds with 404 if job cannot be found", async function () {
+        // delete job, then try to delete again
+        await request(app)
+            .delete(`/jobs/${DATA.jobId}`).send({_token: DATA.token});
         const res = await request(app)
-            .delete(`/jobs/9999999`).send({_token: DATA.token})
+            .delete(`/jobs/${DATA.jobId}`).send({_token: DATA.token});
         expect(res.statusCode).toBe(404);
     });
 });

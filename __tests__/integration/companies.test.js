@@ -37,7 +37,7 @@ beforeEach(async function() {
 });
 
 
-describe('POST /companies', async function() {
+describe('POST /companies', function() {
   test('Creates a new company', async function() {
     const res = await request(app)
       .post('/companies')
@@ -62,7 +62,7 @@ describe('POST /companies', async function() {
   });
 });
 
-describe('GET /companies', async function() {
+describe('GET /companies', function() {
   test('Retrieves a list of 1 company', async function() {
     const res = await request(app).get('/companies')
     .send({
@@ -92,7 +92,7 @@ describe('GET /companies', async function() {
   });
 });
 
-describe('GET /companies/:handle', async function() {
+describe('GET /companies/:handle', function() {
   test('Returns a single company', async function() {
     const res = await request(app)
       .get(`/companies/${DATA.company.handle}`)
@@ -113,7 +113,7 @@ describe('GET /companies/:handle', async function() {
   });
 });
 
-describe('PATCH /companies/:handle', async function() {
+describe('PATCH /companies/:handle', function() {
   test("Updates a single company", async function() {
     const res = await request(app)
       .patch(`/companies/${DATA.company.handle}`)
@@ -147,7 +147,7 @@ describe('PATCH /companies/:handle', async function() {
   });
 });
 
-describe('DELETE /companies/:handle', async function() {
+describe('DELETE /companies/:handle', function() {
   test('Deletes a company', async function() {
     const res = await request(app)
       .delete(`/companies/${DATA.company.handle}`)

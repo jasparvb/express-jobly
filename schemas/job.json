@@ -10,7 +10,8 @@
             "title": "Regional Manager",
             "salary": 130000,
             "equity": 0.5,
-            "company_handle": "walmart"
+            "company_handle": "walmart",
+            "_token": "23985u293509rsid09"
         }
     ],
     "required": [
@@ -59,6 +60,15 @@
             "default": "",
             "examples": [
                 "walmart"
+            ]
+        },
+        "_token": {
+            "$id": "#/properties/token",
+            "type": "string",
+            "title": "The Token Schema ",
+            "default": "",
+            "examples": [
+              "2l34kl2hl445346jklkjsdlsk"
             ]
         }
     }

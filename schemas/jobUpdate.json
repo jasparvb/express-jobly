@@ -9,7 +9,8 @@
         {
             "title": "Regional Manager",
             "salary": 130000,
-            "equity": 0.5
+            "equity": 0.5,
+            "_token": "090u29efuw09sd09sd0"
         }
     ],
     "required": [
@@ -48,6 +49,15 @@
                 0.5
             ],
             "maximum": 1
+        },
+        "_token": {
+            "$id": "#/properties/token",
+            "type": "string",
+            "title": "The Token Schema ",
+            "default": "",
+            "examples": [
+              "2l34kl2hl445346jklkjsdlsk"
+            ]
         }
     }
 }
