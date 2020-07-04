@@ -69,6 +69,46 @@ describe("POST /jobs", async function () {
       expect(response.statusCode).toBe(400);
     });
 });
+
+describe("GET /jobs", async function () {
+    test("Gets list of jobs", async function () {
+        const res = await request(app).get(`/jobs`);
+        const jobs = res.body.jobs;
+        expect(jobs).toHaveLength(1);
+        expect(jobs[0]).toHaveProperty("company_handle");
+        expect(jobs[0]).toHaveProperty("title");
+    });
+  
+    test("Test search", async function () {
+        await request(app)
+            .post(`/jobs`)
+            .send({
+                company_handle: DATA.company.handle,
+                title: "Full Stack Web Developer",
+                salary: 200000,
+                equity: 0.6,
+                _token: DATA.token
+            });
+    
+        await request(app)
+            .post(`/jobs`)
+            .send({
+                company_handle: DATA.company.handle,
+                title: "Junior Web Developer",
+                salary: 100000,
+                equity: 0.3,
+                _token: DATA.token
+            });
+    
+        const response = await request(app)
+            .get("/jobs?search=junior")
+            .send({_token: DATA.token});
+        expect(response.body.jobs).toHaveLength(1);
+        expect(response.body.jobs[0]).toHaveProperty("company_handle");
+        expect(response.body.jobs[0]).toHaveProperty("title");
+    });
+});
+  
   
 
 
