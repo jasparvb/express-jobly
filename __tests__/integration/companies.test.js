@@ -31,12 +31,6 @@ beforeEach(async function() {
 
     DATA.company = result.rows[0];
 
-    const job = await db.query(
-      "INSERT INTO jobs (title, salary, company_handle) VALUES ('Full Stack Developer', 120000, $1) RETURNING *",
-      [DATA.company.handle]
-    );
-    DATA.jobId = job.rows[0].id;
-
   } catch (err) {
     console.error(err);
   }
@@ -181,7 +175,6 @@ afterEach(async function() {
   try {
     await db.query('DELETE FROM users');
     await db.query('DELETE FROM companies');
-    await db.query('DELETE FROM jobs');
   } catch (err) {
     console.error(err);
   }
