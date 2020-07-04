@@ -130,28 +130,55 @@ describe('PATCH /users/:username', function() {
     });
    
     test('Prevents updating field that does not exist', async function() {
-      const res = await request(app)
-        .patch(`/users/${DATA.username}`)
-        .send({ unknownfield: false, _token: `${DATA.token}` });
-      expect(res.statusCode).toBe(400);
+        const res = await request(app)
+            .patch(`/users/${DATA.username}`)
+            .send({ unknownfield: false, _token: `${DATA.token}` });
+        expect(res.statusCode).toBe(400);
     });
   
     test('Keeps a user from updating a different user', async function() {
-      const res = await request(app)
-        .patch(`/users/valverde`)
-        .send({ first_name: 'Ernesto', _token: `${DATA.token}` });
-      expect(res.statusCode).toBe(401);
+        const res = await request(app)
+            .patch(`/users/valverde`)
+            .send({ first_name: 'Ernesto', _token: `${DATA.token}` });
+        expect(res.statusCode).toBe(401);
     });
   
     test('Responds with 404 if user cannot be found', async function() {
-      // delete user first
-      await request(app)
-        .delete(`/users/${DATA.username}`)
-        .send({ _token: `${DATA.token}` });
-      const res = await request(app)
-        .patch(`/users/${DATA.username}`)
-        .send({ _token: `${DATA.token}` });
-      expect(res.statusCode).toBe(404);
+        // delete user first
+        await request(app)
+            .delete(`/users/${DATA.username}`)
+            .send({ _token: `${DATA.token}` });
+        const res = await request(app)
+            .patch(`/users/${DATA.username}`)
+            .send({ _token: `${DATA.token}` });
+        expect(res.statusCode).toBe(404);
+    });
+});
+
+describe('DELETE /users/:username', function() {
+    test('Deletes a user by username', async function() {
+        const res = await request(app)
+            .delete(`/users/${DATA.username}`)
+            .send({ _token: `${DATA.token}` });
+        expect(res.body).toEqual({ message: 'User deleted' });
+    });
+  
+    test('Does not allow user to delete another user', async function() {
+        const res = await request(app)
+            .delete(`/users/valverde`)
+            .send({ _token: `${DATA.token}` });
+        expect(res.statusCode).toBe(401);
+    });
+  
+    test('Responds with 404 if user cannot be found', async function() {
+        // delete user first
+        await request(app)
+            .delete(`/users/${DATA.username}`)
+            .send({ _token: `${DATA.token}` });
+        const res = await request(app)
+            .delete(`/users/${DATA.username}`)
+            .send({ _token: `${DATA.token}` });
+        expect(res.statusCode).toBe(404);
     });
 });
   
