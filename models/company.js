@@ -81,7 +81,7 @@ class Company {
         return result.rows[0];
     }
 
-    static async get(handle) {
+    static async getCompany(handle) {
         const result = await db.query(
             `SELECT handle,
                 name,

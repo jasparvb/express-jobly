@@ -50,7 +50,7 @@ router.post("/", ensureAdmin, async function (req, res, next) {
 
 router.get("/:handle", ensureLoggedIn, async function (req, res, next) {
     try {
-        const company = await Company.get(req.params.handle);
+        const company = await Company.getCompany(req.params.handle);
         return res.json({ company });
     } catch (err) {
         return next(err);

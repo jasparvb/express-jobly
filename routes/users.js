@@ -52,7 +52,7 @@ router.get("/", ensureLoggedIn, async function(req, res, next) {
  **/
 router.get("/:username/", ensureLoggedIn, async function(req, res, next) {
     try {
-        const user = await User.get(req.params.username);
+        const user = await User.getUser(req.params.username);
   
         return res.json({ user });
     } catch (err) {
@@ -75,7 +75,7 @@ router.patch("/:username", ensureCorrectUser, async function (req, res, next) {
             let err = new ExpressError(listOfErrors, 400);
             return next(err);
         }
-        const user = await User.update(req.body, req.params.username);
+        const user = await User.update(req.params.username, req.body);
         return res.status(201).json({ user });
     } catch (err) {
         return next(err);

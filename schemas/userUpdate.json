@@ -7,31 +7,21 @@
     "default": {},
     "examples": [
         {
-            "username": "messi10",
             "password": "copadelRey1",
             "first_name": "Lionel",
             "last_name": "Messi",
             "email": "messi@fcb.es",
             "photo_url": "https://www.fcb.es/cdn/messi.jpg",
-            "is_admin": true
+            "is_admin": true,
+            "_token": "2l34kl2hl445346jklkjsdlsk"
         }
     ],
     "required": [
-        "username",
-        "password"
+        "password",
+        "_token"
     ],
     "additionalProperties": true,
     "properties": {
-        "username": {
-            "$id": "#/properties/username",
-            "type": "string",
-            "title": "The username schema",
-            "description": "An explanation about the purpose of this instance.",
-            "default": "",
-            "examples": [
-                "messi10"
-            ]
-        },
         "password": {
             "$id": "#/properties/password",
             "type": "string",
@@ -92,6 +82,15 @@
             "default": false,
             "examples": [
                 true
+            ]
+        },
+        "_token": {
+            "$id": "#/properties/token",
+            "type": "string",
+            "title": "The Token Schema ",
+            "default": "",
+            "examples": [
+              "2l34kl2hl445346jklkjsdlsk"
             ]
         }
     }
