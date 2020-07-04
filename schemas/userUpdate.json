@@ -17,7 +17,6 @@
         }
     ],
     "required": [
-        "password",
         "_token"
     ],
     "additionalProperties": true,

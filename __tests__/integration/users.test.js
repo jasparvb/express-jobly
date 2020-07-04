@@ -117,6 +117,44 @@ describe('GET /users/:username', function() {
       expect(res.statusCode).toBe(404);
     });
 });
+
+describe('PATCH /users/:username', function() {
+    test("Updates property of single user", async function() {
+        const res = await request(app)
+            .patch(`/users/${DATA.username}`)
+            .send({ first_name: 'Antoine', _token: `${DATA.token}` });
+        expect(res.body.user).toHaveProperty('username');
+        expect(res.body.user).not.toHaveProperty('password');
+        expect(res.body.user.first_name).toBe('Antoine');
+        expect(res.body.user.username).not.toBe(null);
+    });
+   
+    test('Prevents updating field that does not exist', async function() {
+      const res = await request(app)
+        .patch(`/users/${DATA.username}`)
+        .send({ unknownfield: false, _token: `${DATA.token}` });
+      expect(res.statusCode).toBe(400);
+    });
+  
+    test('Keeps a user from updating a different user', async function() {
+      const res = await request(app)
+        .patch(`/users/valverde`)
+        .send({ first_name: 'Ernesto', _token: `${DATA.token}` });
+      expect(res.statusCode).toBe(401);
+    });
+  
+    test('Responds with 404 if user cannot be found', async function() {
+      // delete user first
+      await request(app)
+        .delete(`/users/${DATA.username}`)
+        .send({ _token: `${DATA.token}` });
+      const res = await request(app)
+        .patch(`/users/${DATA.username}`)
+        .send({ _token: `${DATA.token}` });
+      expect(res.statusCode).toBe(404);
+    });
+});
+  
   
 afterEach(async function() {
     try {
