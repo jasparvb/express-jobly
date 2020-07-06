@@ -17,7 +17,7 @@
         "title",
         "salary"
     ],
-    "additionalProperties": true,
+    "additionalProperties": false,
     "properties": {
         "title": {
             "$id": "#/properties/title",

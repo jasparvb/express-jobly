@@ -19,7 +19,7 @@
     "required": [
         "_token"
     ],
-    "additionalProperties": true,
+    "additionalProperties": false,
     "properties": {
         "password": {
             "$id": "#/properties/password",

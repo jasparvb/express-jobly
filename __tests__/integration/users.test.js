@@ -1,3 +1,5 @@
+process.env.NODE_ENV = "test";
+
 const request = require('supertest');
 const app = require('../../app');
 const db = require('../../db');
@@ -5,7 +7,6 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const User = require('../../models/user');
 const DATA = {};
-
 
 beforeEach(async function() {
   try {
@@ -93,7 +94,7 @@ describe('GET /users', function() {
     test('Returns list of users', async function() {
         const res = await request(app)
             .get('/users')
-            .send({ _token: `${DATA.token}` });
+            .send({ _token: DATA.token });
         expect(res.body.users).toHaveLength(1);
         expect(res.body.users[0]).toHaveProperty('username');
         expect(res.body.users[0]).not.toHaveProperty('password');
@@ -104,7 +105,7 @@ describe('GET /users/:username', function() {
     test('Returns a user by username', async function() {
         const res = await request(app)
             .get(`/users/${DATA.username}`)
-            .send({ _token: `${DATA.token}` });
+            .send({ _token: DATA.token });
         expect(res.body.user).toHaveProperty('username');
         expect(res.body.user).not.toHaveProperty('password');
         expect(res.body.user.username).toBe('messi10');
@@ -113,7 +114,7 @@ describe('GET /users/:username', function() {
     test('Responds with 404 if user cannot be found', async function() {
       const res = await request(app)
         .get(`/users/griezman`)
-        .send({ _token: `${DATA.token}` });
+        .send({ _token: DATA.token });
       expect(res.statusCode).toBe(404);
     });
 });
@@ -122,7 +123,7 @@ describe('PATCH /users/:username', function() {
     test("Updates property of single user", async function() {
         const res = await request(app)
             .patch(`/users/${DATA.username}`)
-            .send({ first_name: 'Antoine', _token: `${DATA.token}` });
+            .send({ first_name: 'Antoine', _token: DATA.token });
         expect(res.body.user).toHaveProperty('username');
         expect(res.body.user).not.toHaveProperty('password');
         expect(res.body.user.first_name).toBe('Antoine');
@@ -132,14 +133,14 @@ describe('PATCH /users/:username', function() {
     test('Prevents updating field that does not exist', async function() {
         const res = await request(app)
             .patch(`/users/${DATA.username}`)
-            .send({ unknownfield: false, _token: `${DATA.token}` });
+            .send({ _token: DATA.token, unknownfield: false });
         expect(res.statusCode).toBe(400);
     });
   
     test('Keeps a user from updating a different user', async function() {
         const res = await request(app)
             .patch(`/users/valverde`)
-            .send({ first_name: 'Ernesto', _token: `${DATA.token}` });
+            .send({ first_name: 'Ernesto', _token: DATA.token });
         expect(res.statusCode).toBe(401);
     });
   
@@ -147,10 +148,10 @@ describe('PATCH /users/:username', function() {
         // delete user first
         await request(app)
             .delete(`/users/${DATA.username}`)
-            .send({ _token: `${DATA.token}` });
+            .send({ _token: DATA.token });
         const res = await request(app)
             .patch(`/users/${DATA.username}`)
-            .send({ _token: `${DATA.token}` });
+            .send({ first_name: 'Ernesto', _token: DATA.token });
         expect(res.statusCode).toBe(404);
     });
 });
@@ -159,14 +160,14 @@ describe('DELETE /users/:username', function() {
     test('Deletes a user by username', async function() {
         const res = await request(app)
             .delete(`/users/${DATA.username}`)
-            .send({ _token: `${DATA.token}` });
+            .send({ _token: DATA.token });
         expect(res.body).toEqual({ message: 'User deleted' });
     });
   
     test('Does not allow user to delete another user', async function() {
         const res = await request(app)
             .delete(`/users/valverde`)
-            .send({ _token: `${DATA.token}` });
+            .send({ _token: DATA.token });
         expect(res.statusCode).toBe(401);
     });
   
@@ -174,10 +175,10 @@ describe('DELETE /users/:username', function() {
         // delete user first
         await request(app)
             .delete(`/users/${DATA.username}`)
-            .send({ _token: `${DATA.token}` });
+            .send({ _token: DATA.token });
         const res = await request(app)
             .delete(`/users/${DATA.username}`)
-            .send({ _token: `${DATA.token}` });
+            .send({ _token: DATA.token });
         expect(res.statusCode).toBe(404);
     });
 });
