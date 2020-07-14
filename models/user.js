@@ -59,7 +59,7 @@ class User {
             }
         }
 
-        throw ExpressError("Invalid Username/Password", 401);
+        throw new ExpressError("Invalid Username/Password", 401);
     }
 
     /** Get all users. */
